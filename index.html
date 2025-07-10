@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Extensión para guardar postulaciones de LinkedIn en Google Sheets">
+  <title>LinkedIn Job Saver</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+      <a class="navbar-brand" href="#">LinkedIn Job Saver</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="#funcionalidad">¿Qué hace?</a></li>
+          <li class="nav-item"><a class="nav-link" href="#configuracion">Configuración</a></li>
+          <li class="nav-item"><a class="nav-link" href="privacy.html">Privacidad</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <header class="py-5 text-center bg-light">
+    <div class="container">
+      <h1 class="display-4">LinkedIn Job Saver</h1>
+      <p class="lead mt-3">Guardá tus postulaciones laborales directamente en tu hoja de cálculo de Google con un solo
+        clic.</p>
+      <a href="#configuracion" class="btn btn-primary btn-lg mt-3">¿Cómo lo configuro?</a>
+    </div>
+  </header>
+
+  <section class="py-5 bg-light" id="funcionalidad">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-10 mx-auto">
+          <h2 class="mb-4 text-center">¿Qué hace esta extensión y por qué se creó?</h2>
+          <p class="lead">
+            Muchas veces, después de aplicar a un trabajo en LinkedIn, la oferta desaparece. Esto genera una situación
+            común: <strong>la empresa llama, pero no recordás qué decía la oferta o cuál era la posición</strong>. Y al
+            intentar buscarla, ya no está disponible.
+          </p>
+          <p class="lead">
+            <strong>LinkedIn Job Saver</strong> fue desarrollada para ayudarte a <strong>guardar cada postulación con
+              todos sus detalles importantes</strong>, en el momento que aplicás.
+          </p>
+          <p class="lead">
+            Así podrás consultarla más adelante, incluso si la publicación original fue eliminada.
+          </p>
+
+          <hr class="my-5">
+
+          <h3 class="mb-4">🛠️ Funcionalidades clave</h3>
+          <ul class="list-group list-group-flush fs-5">
+            <li class="list-group-item">
+              📌 Guarda automáticamente: título del puesto, empresa, descripción, datos del reclutador y enlace.
+            </li>
+            <li class="list-group-item">
+              🔗 Almacena todo en tu propia hoja de cálculo de Google Sheets.
+            </li>
+            <li class="list-group-item">
+              🔒 No recolecta ni comparte tus datos personales. Solo vos controlás tu información.
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-5" id="configuracion">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-10 mx-auto">
+          <h2 class="mb-4 text-center">🛠️ ¿Cómo configurar la extensión?</h2>
+          <ol class="fs-5">
+            <li>Crea una hoja de cálculo en Google Sheets con una pestaña llamada <strong>"postulaciones"</strong>.</li>
+            <li>Abri el editor de Apps Script desde el menú <strong>Extensiones &gt; Apps Script</strong>.</li>
+            <li>Pegá el siguiente código en tu proyecto:
+              <pre><code>function doPost(e) {
+  try {
+    const sheet = SpreadsheetApp.openById("TU_ID_DE_HOJA_AQUÍ").getSheetByName("postulaciones");
+    const data = JSON.parse(e.postData.contents);
+
+    Logger.log("Datos recibidos:");
+    Logger.log(JSON.stringify(data));
+
+    sheet.appendRow([
+      new Date(),
+      data.joBtitle || '',
+      data.companyName || '',
+      data.companyHref || '',
+      data.contratanteNombre || '',
+      data.contratanteLink || '',
+      data.acercaDelEmpleo || ''
+    ]);
+
+    return ContentService.createTextOutput("OK").setMimeType(ContentService.MimeType.TEXT);
+  } catch (err) {
+    Logger.log("Error: " + err.toString());
+    return ContentService.createTextOutput("Error: " + err).setMimeType(ContentService.MimeType.TEXT);
+  }
+}</code></pre>
+            </li>
+            <li>
+              Reemplazá <code>"TU_ID_DE_HOJA_AQUÍ"</code> por el ID de tu hoja de cálculo. <br>
+              Por ejemplo, si tu URL es:<br>
+              <code>https://docs.google.com/spreadsheets/d/<strong>1pEkJaXiKJ96P7BxdxqwKTUoAIHSCnaOliJHV6TrPgFY</strong>/edit</code>,<br>
+              el ID es <code>1pEkJaXiKJ96P7BxdxqwKTUoAIHSCnaOliJHV6TrPgFY</code>
+            </li>
+            <li>Publicá el script como una aplicación web, y copiá el ID del Macro (está en la URL después de
+              <code>/s/</code>).
+            </li>
+            <li>Colocá ese ID en la configuración de la extensión.</li>
+          </ol>
+          <p class="mt-4 text-center">
+            ✅ ¡Listo! Ya podés guardar tus postulaciones desde LinkedIn.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="bg-dark text-white py-4">
+    <div class="container text-center">
+      <p class="mb-1">&copy; 2025 LinkedIn Job Saver. Todos los derechos reservados.</p>
+      <a href="privacy.html" class="text-white text-decoration-underline">Política de privacidad</a>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
