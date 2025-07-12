@@ -84,7 +84,8 @@
             <li>Pegá el siguiente código en tu proyecto:
               <pre><code>function doPost(e) {
   try {
-    const sheet = SpreadsheetApp.openById("TU_ID_DE_HOJA_AQUÍ").getSheetByName("postulaciones");
+    const ss = SpreadsheetApp.openById("TU_ID_DE_HOJA_AQUÍ"); 
+    const sheet =  ss.getSheetByName("postulaciones");
     const data = JSON.parse(e.postData.contents);
 
     Logger.log("Datos recibidos:");
@@ -92,7 +93,7 @@
 
     sheet.appendRow([
       new Date(),
-      data.joBtitle || '',
+      data.jobTitle || '',
       data.companyName || '',
       data.companyHref || '',
       data.contratanteNombre || '',
@@ -100,12 +101,13 @@
       data.acercaDelEmpleo || ''
     ]);
 
-    return ContentService.createTextOutput("OK").setMimeType(ContentService.MimeType.TEXT);
+    return ContentService.createTextOutput(ss.getUrl());
   } catch (err) {
-    Logger.log("Error: " + err.toString());
-    return ContentService.createTextOutput("Error: " + err).setMimeType(ContentService.MimeType.TEXT);
+     Logger.log("Error: " + err.toString());
+    return ContentService.createTextOutput("Error: " + err) .setMimeType(ContentService.MimeType.TEXT);
   }
-}</code></pre>
+}
+</code></pre>
             </li>
             <li>
               Reemplazá <code>"TU_ID_DE_HOJA_AQUÍ"</code> por el ID de tu hoja de cálculo. <br>
